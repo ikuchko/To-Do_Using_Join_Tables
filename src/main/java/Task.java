@@ -74,4 +74,22 @@ public class Task {
     }
   }
 
+  public void addCategory(Category category) {
+    try(Connection con = DB.sql2o.open()) {
+      String sql = "INSERT INTO categories_tasks (category_id, task_id) VALUES (:category_id, :task_id)";
+      con.createQuery(sql)
+      .addParameter("category_id", category.getId())
+      .addParameter("task_id", this.getId())
+      .executeUpdate();
+    }
+  }
+
+  public List<Category> getCategories() {
+    try(Connection con = DB.sql2o.open()) {
+      String sql = "SELECT categories.id, categories.name FROM tasks INNER JOIN categories_tasks AS c_t ON tasks.id = c_t.task_id INNER JOIN categories ON categories.id = c_t.category_id WHERE c_t.task_id = :task_id";
+      return con.createQuery(sql)
+        .addParameter("task_id", this.getId())
+        .executeAndFetch(Category.class);
+    }
+  }
 }

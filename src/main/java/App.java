@@ -13,23 +13,42 @@ public class App {
 
     get("/", (request, response) -> {
       HashMap<String, Object> model = new HashMap<String, Object>();
-      model.put("template", "templates/tasks.vtl");
+      model.put("template", "templates/index.vtl");
+      return new ModelAndView(model, layout);
+    }, new VelocityTemplateEngine());
+
+    get("/categories", (request, response) -> {
+      HashMap<String, Object> model = new HashMap<String, Object>();
+      model.put("template", "templates/categories.vtl");
+
+      model.put("categories", Category.all());
+
+      return new ModelAndView(model, layout);
+    }, new VelocityTemplateEngine());
+
+    get("/category/:id", (request, response) -> {
+      HashMap<String, Object> model = new HashMap<String, Object>();
+      Category category = Category.find(Integer.parseInt(request.params("id")));
+
+      model.put("template", "templates/category.vtl");
+
+      model.put("category", category);
+
       return new ModelAndView(model, layout);
     }, new VelocityTemplateEngine());
 
     get("/tasks", (request,response) -> {
       HashMap<String, Object> model = new HashMap<String, Object>();
-      List<Task> tasks = Task.all();
-      model.put("tasks", tasks);
+      model.put("tasks", Task.all());
       model.put("template", "templates/tasks.vtl");
       return new ModelAndView(model, layout);
     }, new VelocityTemplateEngine());
 
-    get("/tasks/:id", (request,response) -> {
+    get("/task/:id", (request,response) -> {
       HashMap<String, Object> model = new HashMap<String, Object>();
-      int id = Integer.parseInt(request.params("id"));
-      Task task = Task.find(id);
-      model.put("task", task);
+      // int id = Integer.parseInt(request.params("id"));
+      // Task task = Task.find(id);
+      model.put("task", Task.find(Integer.parseInt(request.params("id"))));
       model.put("template", "templates/task.vtl");
       return new ModelAndView(model, layout);
     }, new VelocityTemplateEngine());

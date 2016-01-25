@@ -1,0 +1,7 @@
+<h1>$task.getDescription()</h1>
+
+<h2>Here are all the categories for $task.getDescription() :</h2>
+
+#foreach ($category in $task.getCategories())
+  <h3>$category.getName()</h3>
+#end
