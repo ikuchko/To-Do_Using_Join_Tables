@@ -39,8 +39,15 @@ public class App {
 
     get("/tasks", (request,response) -> {
       HashMap<String, Object> model = new HashMap<String, Object>();
-      model.put("tasks", Task.all());
+      model.put("tasks", Task.all(false));
       model.put("template", "templates/tasks.vtl");
+      return new ModelAndView(model, layout);
+    }, new VelocityTemplateEngine());
+
+    get("/complete", (request,response) -> {
+      HashMap<String, Object> model = new HashMap<String, Object>();
+      model.put("tasks", Task.all(true));
+      model.put("template", "templates/complete.vtl");
       return new ModelAndView(model, layout);
     }, new VelocityTemplateEngine());
 
@@ -61,6 +68,33 @@ public class App {
       return null;
     });
 
+    post("/category/new", (request, response) -> {
+      HashMap<String, Object> model = new HashMap<String, Object>();
+      String name = request.queryParams("category");
+      Category newCategory = new Category(name);
+      newCategory.save();
+      response.redirect("/categories");
+      return null;
+    });
+
+    post("/task/new", (request, response) -> {
+      HashMap<String, Object> model = new HashMap<String, Object>();
+      String name = request.queryParams("task");
+      Task newTask = new Task(name);
+      newTask.save();
+      response.redirect("/categories");
+      return null;
+    });
+
+    post("/task/new", (request, response) -> {
+      HashMap<String, Object> model = new HashMap<String, Object>();
+      String name = request.queryParams("category");
+      Category newCategory = new Category(name);
+      response.redirect("/categories");
+      return null;
+    });
+
+
     put("/tasks/:id", (request, response) -> {
       HashMap<String, Object> model = new HashMap<String, Object>();
       Task task = Task.find(Integer.parseInt(request.params("id")));
@@ -70,12 +104,38 @@ public class App {
       return new ModelAndView(model, layout);
     }, new VelocityTemplateEngine());
 
-    delete("/tasks/:id", (request, response) -> {
+    // delete("/tasks/:id", (request, response) -> {
+    //   HashMap<String, Object> model = new HashMap<String, Object>();
+    //   Task task = Task.find(Integer.parseInt(request.params("id")));
+    //   task.delete();
+    //   model.put("template", "templates/task.vtl");
+    //   return new ModelAndView(model, layout);
+    // }, new VelocityTemplateEngine());
+
+    post("/task/complete", (request, response) -> {
       HashMap<String, Object> model = new HashMap<String, Object>();
-      Task task = Task.find(Integer.parseInt(request.params("id")));
-      task.delete();
-      model.put("template", "templates/task.vtl");
-      return new ModelAndView(model, layout);
-    }, new VelocityTemplateEngine());
+
+      for (Task task: Task.all(false)){
+        if (request.queryParams(Integer.toString(task.getId())) != null) {
+          task.complete();
+        }
+      }
+      // Task completedTask = Task.find(Integer.parseInt(request.queryParams("task")));
+      // completedTask.complete();
+      response.redirect("/tasks");
+      return null;
+    });
+
+    post("/task/complete/delete", (request, response) -> {
+      HashMap<String, Object> model = new HashMap<String, Object>();
+      for (Task task: Task.all(true)){
+        if (request.queryParams(Integer.toString(task.getId())) != null) {
+          task.delete();
+        }
+      }
+      // deletedTask.delete();
+      response.redirect("/complete");
+      return null;
+    });
   }
 }

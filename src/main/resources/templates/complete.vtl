@@ -1,8 +1,7 @@
-
-<form action="/task/complete" method="post">
+<form action="/task/complete/delete" method="post">
   #foreach ($task in $tasks)
      <input type="checkbox" name="$task.getId()" id="$task.getDescription()" value="$task.getId()"><a href="/task/$task.getId()">$task.getDescription()</a><br>
   #end
 
-   <button type="submit" class="btn btn-success">Complete Task</button>
+   <button type="submit" class="btn btn-success">Delete Task</button>
 </form>

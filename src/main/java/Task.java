@@ -4,6 +4,7 @@ import org.sql2o.*;
 public class Task {
   private int id;
   private String description;
+  private boolean completion;
 
   public int getId() {
     return id;
@@ -11,6 +12,10 @@ public class Task {
 
   public String getDescription() {
     return description;
+  }
+
+  public boolean isCompleted() {
+    return completion;
   }
 
   public Task(String description) {
@@ -35,9 +40,18 @@ public class Task {
     }
   }
 
+  public static List<Task> all(boolean completed) {
+    String sql = "SELECT id, description FROM tasks WHERE is_completed = :completed";
+    try(Connection con = DB.sql2o.open()) {
+      return con.createQuery(sql)
+        .addParameter("completed", completed)
+        .executeAndFetch(Task.class);
+    }
+  }
+
   public static Task find(int id) {
     try(Connection con = DB.sql2o.open()) {
-      String sql = "SELECT * FROM tasks where id=:id";
+      String sql = "SELECT id, description FROM tasks where id=:id";
       Task task = con.createQuery(sql)
         .addParameter("id", id)
         .executeAndFetchFirst(Task.class);
@@ -90,6 +104,16 @@ public class Task {
       return con.createQuery(sql)
         .addParameter("task_id", this.getId())
         .executeAndFetch(Category.class);
+    }
+  }
+
+  public void complete() {
+    try(Connection con = DB.sql2o.open()) {
+      String sql = "UPDATE tasks SET is_completed = true WHERE id = :id";
+      con.createQuery(sql)
+      .addParameter("id", this.getId())
+      .executeUpdate();
+      completion = true;
     }
   }
 }

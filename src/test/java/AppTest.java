@@ -76,6 +76,43 @@ public class AppTest extends FluentTest {
     assertThat(pageSource()).contains("Main work");
   }
 
+  @Test
+  public void completedTasksNotShownOnPage() {
+    Task taskOne = new Task("Mow the lawn");
+    taskOne.save();
+    Task taskTwo = new Task("Do laundry");
+    taskTwo.save();
+
+    // goTo("http://localhost:4567/tasks");
+    // click("input", withId(taskTwo.getDescription()));
+    //click("checkbox", withValue(Integer.toString(taskOne.getId())));
+    // submit(".btn");
+    assertThat(!(pageSource()).contains("Do laundry"));
+  }
+
+  @Test
+  public void completedTasksAppearOnCompletedPage() {
+    Task newTask = new Task("Do homework");
+    newTask.save();
+    newTask.complete();
+    goTo("http://localhost:4567/complete");
+    assertThat((pageSource()).contains("Do homework"));
+  }
+
+  @Test
+  public void completedTasksDeletedSuccesfully() {
+    Task newTask = new Task("Do homework");
+    newTask.save();
+    Task task = new Task("Do laundry");
+    task.save();
+    newTask.complete();
+    task.complete();
+    //newTask.delete();
+    goTo("http://localhost:4567/complete");
+    click("input", withId("Do homework"));
+    submit(".btn");
+    assertThat(pageSource()).contains(!("Do laundry"));
+  }
   // @Test
   // public void categoryIsDisplayedTest() {
   //   Category newCategory = new Category("Chores");

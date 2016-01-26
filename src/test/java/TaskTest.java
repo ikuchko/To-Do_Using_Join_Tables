@@ -69,4 +69,23 @@ public class TaskTest {
     List savedCategories = myTask.getCategories();
     assertEquals(savedCategories.size(), 1);
   }
+
+  @Test
+  public void taskIsCompletedCorrectly() {
+    Task task = new Task("Some task");
+    task.save();
+    task.complete();
+    assertEquals(true, task.isCompleted());
+  }
+
+  @Test
+  public void returnAllIncompletedTasks() {
+    Task task = new Task("Some task");
+    task.save();
+    Task otherTask = new Task("Another task");
+    otherTask.save();
+    task.complete();
+    assertEquals(Task.all(true).get(0), task);
+    assertEquals(Task.all(false).get(0), otherTask);
+  }
 }

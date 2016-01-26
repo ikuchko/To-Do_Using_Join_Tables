@@ -4,3 +4,40 @@
     <li><a href="/category/$category.getId()">$category.getName()</a></li>
   #end
 </ul>
+
+<h3>Add Category</h3>
+    <form action="/category/new" method="post">
+      <div class="form-group">
+        <label for="category">Category name</label>
+        <input id="category" name="category" type="text" class="form-control" style="width: 250px;">
+      </div>
+      <button type="submit" class="btn btn-success">Add Category</button>
+    </form>
+
+<h3>Add Task</h3>
+    <form action="/task/new" method="post">
+      <div class="form-group">
+        <label for="task">Task name</label>
+        <input id="task" name="task" type="text" class="form-control" style="width: 250px;">
+      </div>
+      <button type="submit" class="btn btn-success">Add Task</button>
+    </form>
+
+
+<!-- <h3>Add a New Task</h3>
+     <form action="/client/new" method="post">
+     <div class="form-group">
+       <label for="categoryId">Select a Stylist</label>
+       <select id='categoryId' name='categoryId' type='text'>
+       #foreach($category in $categories)
+         <option value="$category.getId()">$category.getName()</option>
+       #end
+       </select>
+     </div>
+     <div class="form-group">
+       <label for="client">Client Name</label>
+       <input id="client" name="client" type="text" class="form-control" style="width: 250px;">
+     </div>
+
+     <button type="submit" class="btn btn-success">Add Client</button>
+     </form> -->
